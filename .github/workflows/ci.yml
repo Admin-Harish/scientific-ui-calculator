@@ -1,0 +1,35 @@
+name: Robot Tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install webdriver-manager
+
+      - name: Install Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Run tests
+        run: |
+          robot -d reports tests/
+
+      - name: Upload Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-reports
+          path: reports/
